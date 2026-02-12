@@ -1,35 +1,35 @@
-name: 'FTP Deploy Locaweb'
-author: 'Locaweb'
-description: 'Automatize o envio de arquivos de FTP do seu site para o seu site Locaweb!'
+name: 'FTP Deploy (Parallel)'
+author: 'Murillo HMS'
+description: 'Deploy FTP de alta performance com conexões paralelas para Angular e outros apps.'
 inputs:
   host:
-    description: 'FTP host'
+    description: 'Endereço do servidor FTP'
     required: true
   user:
-    description: 'FTP user'
+    description: 'Usuário do FTP'
     required: true
   password:
-    description: 'FTP password'
+    description: 'Senha do FTP'
     required: true
   forceSsl:
-    description: 'Force SSL encryption'
+    description: 'Forçar criptografia SSL (true/false)'
     required: false
     default: 'false'
   localDir:
-    description: 'Local directory'
+    description: 'Pasta local do build (ex: dist/projeto/browser)'
     required: false
     default: '.'
   remoteDir:
-    description: 'Remote directory'
+    description: 'Pasta de destino no servidor'
     required: false
     default: 'public_html'
   options:
-    description: 'Additional mirror command options'
+    description: 'Opções extras para o comando mirror do lftp'
     required: false
     default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
 branding:
-  color: 'red'
-  icon: 'upload-cloud'
+  color: 'blue'
+  icon: 'zap'
