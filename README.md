@@ -1,7 +1,6 @@
 # 🚀 FTP Deploy (Parallel)
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/murillohms/ftp-deploy/main.yml?branch=main&style=for-the-badge)
-![License](https://img.shields.io/github/license/murillohms/ftp-deploy?style=for-the-badge&color=blue)
+![License](https://img.shields.io/github/license/murillohms/ftp-deploy-locaweb?style=for-the-badge&color=blue)
 
 Esta GitHub Action automatiza o envio de arquivos via FTP/SFTP com foco em **alta performance**. Ideal para deploys de Single Page Applications (SPA) como **Angular**, **React** e **Vue.js**, onde centenas de arquivos pequenos precisam ser transferidos rapidamente.
 
