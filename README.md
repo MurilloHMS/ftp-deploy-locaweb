@@ -1,39 +1,64 @@
-# ftp-deploy
+# 🚀 FTP Deploy (Parallel)
 
-Automatize o envio de arquivos de FTP do seu site para o seu site Locaweb!
+![License](https://img.shields.io/github/license/murillohms/ftp-deploy-locaweb?style=for-the-badge&color=blue)
 
-## Exemplo de uso
+Esta GitHub Action automatiza o envio de arquivos via FTP/SFTP com foco em **alta performance**. Ideal para deploys de Single Page Applications (SPA) como **Angular**, **React** e **Vue.js**, onde centenas de arquivos pequenos precisam ser transferidos rapidamente.
 
-```
-name: Deploy via ftp
-on: push
+## ⚡ Por que usar este Fork?
+
+Diferente da versão original, esta action utiliza o `lftp` configurado para **multithreading**, permitindo até **20 conexões simultâneas**. Isso reduz drasticamente o tempo de deploy, especialmente em servidores como Locaweb, Hostgator e similares.
+
+* **Transferência Paralela:** Envia múltiplos arquivos ao mesmo tempo.
+* **Smart Mirror:** Sobe apenas o que foi alterado (`--only-newer`).
+* **Dockerizado:** Roda em um container Alpine 3.19 super leve e seguro.
+
+## 🛠️ Exemplo de Uso (Angular)
+
+```yaml
+name: Deploy Web App
+on:
+  push:
+    branches: [main]
+
 jobs:
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: FTP Deploy Locaweb
-      uses: locaweb/ftp-deploy@1.0.0
-      with:
-        host: ${{ secrets.HOST }} 
-        user: ${{ secrets.USER }}
-        password: ${{ secrets.PASS }}
-        localDir: "dist"
+      - name: Install & Build
+        run: |
+          npm ci
+          npm run build -- --configuration production
+
+      - name: FTP Deploy Parallel
+        uses: murillohms/ftp-deploy@main
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          localDir: "dist/seu-projeto/browser"
+          remoteDir: "public_html"
+          forceSsl: "false"
+
 ```
 
+## 📋 Parâmetros
 
-> Disclaimer: Use secrets para os dados de acesso do seu Servidor FTP, segredos evitam de você expor dados sensíveis no seu código fonte. Para mais detalhes de uso de secrets no github acesse https://docs.github.com/en/actions/security-guides/encrypted-secrets 
+| Parâmetro | Descrição | Requerido | Padrão |
+| --- | --- | --- | --- |
+| `host` | Host do servidor FTP | Sim | N/A |
+| `user` | Usuário do FTP | Sim | N/A |
+| `password` | Senha do FTP | Sim | N/A |
+| `localDir` | Pasta local para subir (ex: `dist/out`) | Não | `.` |
+| `remoteDir` | Pasta de destino no servidor | Não | `public_html` |
+| `forceSsl` | Forçar criptografia SSL (FTPS) | Não | `false` |
+| `options` | Flags adicionais do comando [lftp](https://lftp.yar.ru/lftp-man.pdf) | Não | `''` |
 
-## Parâmetros de uso
+---
 
-Parâmetro | Descrição | É requerido? | Padrão
---- | --- | --- | ---
-host | Host | Sim | N/A
-user | Usuário de FTP | Sim | N/A
-password | Senha | Sim | N/A
-localDir | Diretório do projeto a ser copiado a sua hospedagem | Não | .
-remoteDir | Diretório da sua hospedagem que irá receber os arquivos copiados, **caso sua hospedagem for Windows use o valor 'web'** | Não | 'public_html'
-forceSsl | Forçar encryptação SSL | Não | false
-options | Opções adicionais ao uso do comando [lftp](http://lftp.yar.ru/lftp-man.pdf) | Não | ''
+### 💡 Dica de Performance
+
+Para deploys na **Locaweb**, recomendamos manter `forceSsl: "false"` a menos que você tenha certeza que o serviço de FTP do seu plano suporta TLS, caso contrário a conexão pode ser recusada.
+
+---
